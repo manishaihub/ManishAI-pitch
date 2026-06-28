@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Manish AI — AI YouTube Launchpad for Educators</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --black:      #0A0A0A;
+    --dark:       #111111;
+    --card:       #161616;
+    --gold:       #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim:   #8A6F30;
+    --cream:      #F5F0E8;
+    --gray:       #AAAAAA;
+    --border:     #2A2A2A;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    background: var(--gold);
+    height: 4px;
+    width: 100%;
+  }
+
+  /* ── Container ── */
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 28px 60px; }
+
+  /* ── Header ── */
+  header {
+    text-align: center;
+    padding: 56px 0 40px;
+    position: relative;
+  }
+  .brand {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .divider-gold {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 14px auto;
+  }
+  .headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1.2;
+    max-width: 700px;
+    margin: 0 auto 16px;
+  }
+  .headline span { color: var(--gold); }
+  .subhead {
+    font-size: 14px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ── Section label ── */
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  /* ── Intro bar ── */
+  .intro-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--gold);
+    border-radius: 4px;
+    padding: 24px 32px;
+    margin: 40px 0;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+  .intro-stat { text-align: center; flex: 1; }
+  .intro-stat .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+  }
+  .intro-stat .lbl {
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+  .stat-divider { width: 1px; background: var(--border); align-self: stretch; }
+
+  /* ── Package Cards ── */
+  .cards-section { margin: 48px 0; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 22px;
+    position: relative;
+    transition: transform .2s;
+  }
+  .card:hover { transform: translateY(-3px); }
+  .card.featured {
+    border-color: var(--gold);
+    background: #141200;
+  }
+  .badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--black);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .card-tier {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 6px;
+  }
+  .card-price {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--gold);
+    margin-bottom: 18px;
+    font-family: 'Playfair Display', serif;
+  }
+  .card-price span { font-size: 14px; color: var(--gray); font-weight: 400; font-family: 'Inter', sans-serif; }
+  .card-divider { height: 1px; background: var(--border); margin-bottom: 18px; }
+  .card-features { list-style: none; }
+  .card-features li {
+    font-size: 12.5px;
+    color: var(--gray);
+    padding: 5px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.5;
+  }
+  .card-features li::before {
+    content: '▸';
+    color: var(--gold);
+    font-size: 10px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .card.featured .card-features li { color: #CCBB88; }
+
+  /* ── What you get ── */
+  .deliverables { margin: 48px 0; }
+  .deliv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .deliv-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 22px 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .deliv-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .deliv-title {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+  .deliv-desc { font-size: 12px; color: var(--gray); line-height: 1.6; }
+
+  /* ── Session table ── */
+  .sessions { margin: 48px 0; }
+  .session-table { width: 100%; border-collapse: collapse; }
+  .session-table th {
+    background: var(--dark);
+    color: var(--gold);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid var(--gold-dim);
+  }
+  .session-table td {
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--gray);
+    border-bottom: 1px solid var(--border);
+  }
+  .session-table tr:last-child td { border-bottom: none; }
+  .session-table tr:hover td { background: #161616; color: var(--cream); }
+  .session-num {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  /* ── Tools included ── */
+  .tools-strip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px 32px;
+    margin: 48px 0;
+    text-align: center;
+  }
+  .tools-strip p { font-size: 10px; letter-spacing: 3px; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 16px; }
+  .tools-list { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+  .tool-pill {
+    background: #1A1A1A;
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 7px 16px;
+    border-radius: 30px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Testimonial-style quote ── */
+  .quote-box {
+    background: var(--card);
+    border-left: 3px solid var(--gold);
+    padding: 24px 28px;
+    margin: 48px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+  .quote-attr { font-size: 12px; color: var(--gold); letter-spacing: 1px; }
+
+  /* ── CTA ── */
+  .cta-section {
+    text-align: center;
+    padding: 52px 40px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--gold);
+    border-radius: 6px;
+    margin: 48px 0;
+  }
+  .cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--cream);
+    margin-bottom: 10px;
+  }
+  .cta-sub { font-size: 13px; color: var(--gray); margin-bottom: 28px; line-height: 1.7; }
+  .cta-btn {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--black);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    padding: 14px 40px;
+    border-radius: 3px;
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+  }
+  .cta-btn:hover { background: var(--gold-light); transform: scale(1.02); }
+  .handle { margin-top: 20px; font-size: 13px; color: var(--gold-dim); }
+
+  /* ── Contact row ── */
+  .contact-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #1A1A1A;
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 40px;
+    text-decoration: none;
+    transition: border-color .2s, color .2s;
+  }
+  .contact-link:hover { border-color: var(--gold); color: var(--gold); }
+  .contact-icon { font-size: 15px; }
+  .contact-divider { width: 1px; height: 20px; background: var(--border); }
+  .cta-note {
+    margin-top: 20px;
+    font-size: 11px;
+    color: var(--gold-dim);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 20px 0 8px;
+    border-top: 1px solid var(--border);
+  }
+  footer p { font-size: 11px; color: var(--gold-dim); }
+
+  @media (max-width: 600px) {
+    .cards { grid-template-columns: 1fr; }
+    .deliv-grid { grid-template-columns: 1fr; }
+    .intro-bar { flex-direction: column; gap: 20px; }
+    .stat-divider { width: 100%; height: 1px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar"></div>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">✦ &nbsp; Manish AI &nbsp; ✦</div>
+    <div class="divider-gold"></div>
+    <h1 class="headline">
+      Turn Your Physics Expertise Into a<br>
+      <span>YouTube Channel That Earns</span><br>
+      ₹1 Lakh/Month
+    </h1>
+    <div class="divider-gold"></div>
+    <p class="subhead">Complete AI-Powered YouTube Launch Program — Designed Exclusively for Physics Educators</p>
+  </header>
+
+  <!-- STATS BAR -->
+  <div class="intro-bar">
+    <div class="intro-stat">
+      <span class="num">2.5 Cr+</span>
+      <div class="lbl">JEE/NEET students searching online yearly</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="intro-stat">
+      <span class="num">3 Hrs</span>
+      <div class="lbl">To produce a full AI-powered video</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="intro-stat">
+      <span class="num">90 Days</span>
+      <div class="lbl">From zero to your first 30 videos live</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="intro-stat">
+      <span class="num">₹5L+</span>
+      <div class="lbl">Monthly potential at 1 lakh subscribers</div>
+    </div>
+  </div>
+
+  <!-- PACKAGES -->
+  <div class="cards-section">
+    <div class="section-label">Choose Your Package</div>
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-tier">Tier 1</div>
+        <div class="card-name">Starter Kit</div>
+        <div class="card-price">₹2,999 <span>one-time</span></div>
+        <div class="card-divider"></div>
+        <ul class="card-features">
+          <li>1-hour onboarding call</li>
+          <li>PDF Ebook: AI Toolkit for Educators</li>
+          <li>30 ChatGPT prompts for teachers</li>
+          <li>WhatsApp support group (30 days)</li>
+          <li>Quick-start checklist</li>
+        </ul>
+      </div>
+
+      <div class="card featured">
+        <div class="badge">⭐ Most Popular</div>
+        <div class="card-tier">Tier 2</div>
+        <div class="card-name">Creator Launchpad</div>
+        <div class="card-price">₹7,999 <span>one-time</span></div>
+        <div class="card-divider"></div>
+        <ul class="card-features">
+          <li>Everything in Starter Kit</li>
+          <li>3 live 1-on-1 sessions (1.5 hrs each)</li>
+          <li>Physics YouTuber AI Playbook PDF</li>
+          <li>Custom channel strategy document</li>
+          <li>NotebookLM masterclass (recorded)</li>
+          <li>Script writing workflow with ChatGPT</li>
+          <li>60-day WhatsApp support</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-tier">Tier 3</div>
+        <div class="card-name">Done-With-You</div>
+        <div class="card-price">₹14,999 <span>one-time</span></div>
+        <div class="card-divider"></div>
+        <ul class="card-features">
+          <li>Everything in Creator Launchpad</li>
+          <li>6 sessions total (full build)</li>
+          <li>5 ready-to-use video scripts</li>
+          <li>5 branded Canva thumbnail templates</li>
+          <li>ElevenLabs voiceover workflow</li>
+          <li>YouTube SEO guide (AI-powered)</li>
+          <li>3-month content calendar (12 ideas)</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DELIVERABLES -->
+  <div class="deliverables">
+    <div class="section-label">What You Will Walk Away With</div>
+    <div class="deliv-grid">
+      <div class="deliv-item">
+        <div class="deliv-icon">📘</div>
+        <div>
+          <div class="deliv-title">Physics YouTuber AI Playbook</div>
+          <div class="deliv-desc">35-page premium PDF covering channel strategy, niche selection, full AI content engine, script prompts, SEO guide, and 90-day roadmap.</div>
+        </div>
+      </div>
+      <div class="deliv-item">
+        <div class="deliv-icon">🎯</div>
+        <div>
+          <div class="deliv-title">Custom Channel Strategy</div>
+          <div class="deliv-desc">Personalized niche, content pillars, upload schedule, and positioning document — built specifically for your expertise and goals.</div>
+        </div>
+      </div>
+      <div class="deliv-item">
+        <div class="deliv-icon">🤖</div>
+        <div>
+          <div class="deliv-title">Complete AI Tools Mastery</div>
+          <div class="deliv-desc">ChatGPT, NotebookLM, Canva AI, CapCut, ElevenLabs — you will know exactly how to use each tool in your weekly workflow.</div>
+        </div>
+      </div>
+      <div class="deliv-item">
+        <div class="deliv-icon">🎬</div>
+        <div>
+          <div class="deliv-title">Full Video Production System</div>
+          <div class="deliv-desc">Go from an idea to a fully edited, SEO-optimized physics video in under 3 hours — faceless or with your own voice, your choice.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SESSION TABLE -->
+  <div class="sessions">
+    <div class="section-label">Session-by-Session Breakdown (Tier 2 &amp; 3)</div>
+    <table class="session-table">
+      <thead>
+        <tr>
+          <th style="width:90px">Session</th>
+          <th>Topic Covered</th>
+          <th style="width:120px">Tools Used</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="session-num">Session 1</span></td>
+          <td>AI Tools Overview + ChatGPT Deep Dive for Educators</td>
+          <td>ChatGPT, Perplexity</td>
+        </tr>
+        <tr>
+          <td><span class="session-num">Session 2</span></td>
+          <td>NotebookLM Masterclass — Research from NCERT & HC Verma</td>
+          <td>NotebookLM</td>
+        </tr>
+        <tr>
+          <td><span class="session-num">Session 3</span></td>
+          <td>Video Script Writing System + Prompt Engineering</td>
+          <td>ChatGPT, Google Docs</td>
+        </tr>
+        <tr>
+          <td><span class="session-num">Session 4</span></td>
+          <td>Faceless Video Creation — Slides, Voiceover, Editing</td>
+          <td>Canva, ElevenLabs, CapCut</td>
+        </tr>
+        <tr>
+          <td><span class="session-num">Session 5</span></td>
+          <td>YouTube SEO, Thumbnails, Upload Strategy</td>
+          <td>VidIQ, Canva, ChatGPT</td>
+        </tr>
+        <tr>
+          <td><span class="session-num">Session 6</span></td>
+          <td>Full Channel Review + 3-Month Content Plan</td>
+          <td>All tools combined</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TOOLS STRIP -->
+  <div class="tools-strip">
+    <p>AI Tools You Will Master</p>
+    <div class="tools-list">
+      <span class="tool-pill">ChatGPT</span>
+      <span class="tool-pill">NotebookLM</span>
+      <span class="tool-pill">Canva AI</span>
+      <span class="tool-pill">ElevenLabs</span>
+      <span class="tool-pill">CapCut</span>
+      <span class="tool-pill">VidIQ</span>
+      <span class="tool-pill">Gemini</span>
+      <span class="tool-pill">Perplexity AI</span>
+    </div>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="quote-box">
+    <div class="quote-text">
+      "You already have the knowledge. You already have the credibility. You already have students who trust you.
+      AI is simply the production studio that turns your expertise into a scalable income — while you sleep."
+    </div>
+    <div class="quote-attr">— Manish AI &nbsp;|&nbsp; @manishaihub</div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="cta-title">Ready to Start Your YouTube Journey?</div>
+    <p class="cta-sub">
+      Book a free 20-minute discovery call. I will understand your goals, answer every question,<br>
+      and show you exactly which package is right for you — zero pressure.
+    </p>
+
+    <!-- WhatsApp CTA -->
+    <a class="cta-btn" href="https://wa.me/919304445956?text=Hi%20Manish!%20I%20saw%20your%20AI%20YouTube%20Launchpad%20package%20and%20I%27m%20interested%20in%20booking%20a%20free%20discovery%20call." target="_blank">
+      📲 &nbsp;Book Free Call on WhatsApp
+    </a>
+
+    <!-- Contact row -->
+    <div class="contact-row">
+      <a class="contact-link" href="tel:+919304445956">
+        <span class="contact-icon">📞</span>
+        <span>+91 9304445956</span>
+      </a>
+      <div class="contact-divider"></div>
+      <a class="contact-link" href="https://wa.me/919304445956" target="_blank">
+        <span class="contact-icon">💬</span>
+        <span>WhatsApp</span>
+      </a>
+      <div class="contact-divider"></div>
+      <a class="contact-link" href="https://instagram.com/manishaihub" target="_blank">
+        <span class="contact-icon">📸</span>
+        <span>@manishaihub</span>
+      </a>
+    </div>
+
+    <p class="cta-note">Free call · No pressure · 20 minutes · Hindi / English</p>
+  </div>
+
+</div><!-- /wrap -->
+
+<div style="background:var(--gold);height:3px;width:100%;"></div>
+
+<div class="wrap">
+  <footer>
+    <p>Manish AI &nbsp;|&nbsp; @manishaihub &nbsp;|&nbsp; Premium AI Education Services &nbsp;|&nbsp; 2025</p>
+  </footer>
+</div>
+
+</body>
+</html>
